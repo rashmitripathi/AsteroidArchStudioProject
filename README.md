@@ -9,9 +9,21 @@ The application can be run in ArchStudio AIM Launcher from its architecture. The
 
 Architecture developed in ArchStudio:
 
+![](https://github.com/rashmitripathi/AsteroidArchStudioProject/blob/master/screenshots/architecture.JPG)
 
+Screenshots of game application :
 
-Screenshots:
+## Initial Screen
+
+![](https://github.com/rashmitripathi/AsteroidArchStudioProject/blob/master/screenshots/initialScreen.JPG)
+
+## With Bullets
+
+![](https://github.com/rashmitripathi/AsteroidArchStudioProject/blob/master/screenshots/WITHBULLETS.JPG)
+
+## Last Scoring Page
+
+![](https://github.com/rashmitripathi/AsteroidArchStudioProject/blob/master/screenshots/LastScreen.JPG)
 
 
 
@@ -20,4 +32,5 @@ Screenshots:
 References:
 
 Class Tutorial by Dr. Yongie Zheng
+
 http://isr.uci.edu/projects/archstudio/
