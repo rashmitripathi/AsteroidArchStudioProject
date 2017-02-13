@@ -2,7 +2,7 @@
 
 
 This application has an explicit architecture model designed in ArchStudio plugin in Eclipse IDE that includes at least FOUR connected components.Each component has defined interfaces, and communicates with other components through the interfaces.
-The application can be run in ArchStudio AIM Launcher from its architecture. The original source code has been modified to get a two player Asteroid Game with each player has their own spaceship, key control, and score. Also two players work together to fight against moving asteroids.The game ends if both players die.
+The application can be run in ArchStudio AIM Launcher from its architecture. The original source code coded using Java AWT(Abstract Window ToolKit) has been modified to get a two player Asteroid Game with each player has their own spaceship, key control, and score. Also two players work together to fight against moving asteroids.The game ends if both players die.
 
 IDE : Eclipse 
 
