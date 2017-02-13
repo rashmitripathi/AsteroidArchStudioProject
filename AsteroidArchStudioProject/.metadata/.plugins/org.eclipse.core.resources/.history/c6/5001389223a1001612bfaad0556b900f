@@ -1,0 +1,34 @@
+package edu.umkc.asteroid.archInterfaces;
+
+import org.psnbtech.util.Clock;
+import org.psnbtech.util.hasElapsedCycle;
+import org.psnbtech.util.peekElapsedCycle;
+
+public interface IClock {
+
+	public default void setCyclesPerSecond(float cyclesPerSecond) {
+	}	
+	
+	public default void reset() {
+	}
+	
+	public Clock create();
+	
+	public void update();	
+	
+	public void setPaused(boolean paused);
+	
+	public boolean isPaused(); 
+	
+	public default boolean hasElapsedCycle() {}
+	
+	
+	public boolean peekElapsedCycle() { }
+	
+	private static final long getCurrentTime() {
+		return (System.nanoTime() / 1000000L);
+	}
+
+
+
+}

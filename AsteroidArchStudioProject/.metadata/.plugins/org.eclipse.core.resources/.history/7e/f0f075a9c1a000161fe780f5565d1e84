@@ -1,0 +1,14 @@
+package edu.umkc.asteroid.archInterfaces;
+
+public interface IClock {
+
+	public default void setCyclesPerSecond(float cyclesPerSecond) {	}
+	
+	
+	public default void reset() {}
+	
+	
+
+
+
+}

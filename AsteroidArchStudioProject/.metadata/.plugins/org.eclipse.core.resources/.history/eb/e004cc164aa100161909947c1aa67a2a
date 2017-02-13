@@ -1,0 +1,225 @@
+package comp.Player2;
+
+import java.awt.Graphics2D;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.psnbtech.Game;
+import org.psnbtech.WorldPanel;
+
+import org.psnbtech.entity.Asteroid;
+import org.psnbtech.entity.Bullet;
+import org.psnbtech.entity.Entity;
+import org.psnbtech.entity.Player;
+
+import org.psnbtech.util.Vector2;
+
+public class Player2Imp  implements IPlayer2Imp
+{
+	private Player2Arch _arch;
+	
+	public Player player1;
+	
+	Game game;
+	
+	/**
+	 * Whether the ship should apply thrust when it updates.
+	 */
+	private boolean thrustPressed;
+	
+	/**
+	 * Whether the ship should rotate to the left when it updates.
+	 */
+	private boolean rotateLeftPressed;
+	
+	/**
+	 * Whether the ship should rotate to the right when it updates.
+	 */
+	private boolean rotateRightPressed;
+	
+	/**
+	 * Whether the ship should fire a bullet when it updates.
+	 */
+	private boolean firePressed;
+		
+	/**
+	 * Whether the ship is allowed to fire a bullet.
+	 */
+	private boolean firingEnabled;
+	
+	
+	/**
+	 * The number of lives the Player has left.
+	 */
+	public int lives;
+	
+	/**
+	 * The current score.
+	 */
+	public int score;
+	
+	/**
+	 * The current animation frame.
+	 */
+	private int animationFrame;
+	
+
+    public Player2Imp (){
+    }
+
+	public void setArch(Player2Arch arch){
+		_arch = arch;
+	}
+	public Player2Arch getArch(){
+		return _arch;
+	}
+
+	/*
+  	  Myx Lifecycle Methods: these methods are called automatically by the framework
+  	  as the bricks are created, attached, detached, and destroyed respectively.
+	*/	
+	public void init(){
+	    //TODO Auto-generated method stub
+		player1=new Player();
+		game=_arch.OUT_IGame.startGameExecution();;
+		
+	}
+	public void begin(){
+		//TODO Auto-generated method stub
+	}
+	public void end(){
+		//TODO Auto-generated method stub
+	}
+	public void destroy(){
+		//TODO Auto-generated method stub
+	}
+
+	/*
+  	  Implementation primitives required by the architecture
+	*/
+  
+    //To be imported: Graphics2D,ArrayList,Iterator,List,Game,WorldPanel,Asteroid,Bullet,Entity,Player,Vector2
+	/**
+	 * Sets whether this player should apply thrust when it updates.
+	 * @param state Whether to apply thrust.
+	 */
+	public void setThrusting(boolean state) {
+		this.thrustPressed = state;
+	}
+	
+	/**
+	 * Sets whether this player should rotate left when it updates.
+	 * @param state Whether to rotate left.
+	 */
+	public void setRotateLeft(boolean state) {
+		this.rotateLeftPressed = state;
+	}
+	
+	/**
+	 * Sets whether this player should rotate right when it updates.
+	 * @param state Whether to rotate right.
+	 */
+	public void setRotateRight(boolean state) {
+		this.rotateRightPressed = state;
+	}
+	
+	/**
+	 * Sets whether this player should fire when it updates.
+	 * @param state Whether to fire.
+	 */
+	public void setFiring(boolean state) {
+		this.firePressed = state;
+	}
+		
+	/**
+	 * Sets whether this player can fire when it updates.
+	 * @param state Whether this player can fire.
+	 */
+	public void setFiringEnabled(boolean state) {
+		this.firingEnabled = state;
+	}
+	
+	/**
+	 * Resets the player to it's default spawn position, speed, and rotation,
+	 * and clears the list of bullets.
+	 */
+	public void reset() {
+		player1.reset();
+	}
+		
+	@Override
+	public void update(Game game) {
+		player1.update(game);
+	}
+	
+	@Override
+	public void handleCollision(Game game, Entity other) {
+		//Kill the player if it collides with an Asteroid.
+		if(other.getClass() == Asteroid.class) {
+			this.lives--;
+			_arch.OUT_IGame.killPlayer();
+			//Disable the ability to fire.
+			this.setFiringEnabled(false);
+		}
+	}
+	
+	/**
+	 * Add to the current score.
+	 * @param score The number of points to add.
+	 */
+	public void addScore(int score) {
+		this.score += score;
+	}
+	
+	/**
+	 * Gets the current score.
+	 * @return The current score.
+	 */
+	public int getScore() {
+		return score;
+	}
+	
+	@Override
+	public void draw(Graphics2D g, Game game) {
+		/*
+		 * When the player recently spawned, it will flash for a few seconds to indicate
+		 * that it is invulnerable. The player will not flash if the game is paused.
+		 */
+		if(!game.isPlayerInvulnerable() || game.isPaused() || animationFrame % 20 < 10) {
+			/*
+			 * Draw the ship. The nose will face right (0.0 on the unit circle). All
+			 * transformations will be handled by the WorldPanel before calling the draw
+			 * function.
+			 */
+			g.drawLine(-10, -8, 10, 0);
+			g.drawLine(-10, 8, 10, 0);
+			g.drawLine(-6, -6, -6, 6);
+		
+			//Draw the flames behind the ship if we thrusting, and not paused.
+			if(!game.isPaused() && thrustPressed && animationFrame % 6 < 3) {
+				g.drawLine(-6, -6, -12, 0);
+				g.drawLine(-6, 6, -12, 0);
+			}
+		}
+	}
+
+	@Override
+	public Player createPlayer() {
+		// TODO Auto-generated method stub
+		return player1;
+	}
+
+	@Override
+	public void setArch(Player2Arch arch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Player2Arch getArch() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

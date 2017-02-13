@@ -1,0 +1,107 @@
+package comp.Player1;
+
+
+import java.awt.Graphics2D;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.psnbtech.Game;
+import org.psnbtech.WorldPanel;
+
+import org.psnbtech.entity.Asteroid;
+import org.psnbtech.entity.Bullet;
+import org.psnbtech.entity.Entity;
+import org.psnbtech.entity.Player;
+
+import org.psnbtech.util.Vector2;
+
+public class Player1Imp implements IPlayer1Imp
+{
+	private Player1Arch _arch;
+	
+	public Player player1;
+
+    public Player1Imp (){
+    }
+
+	public void setArch(Player1Arch arch){
+		_arch = arch;
+	}
+	public Player1Arch getArch(){
+		return _arch;
+	}
+
+	/*
+  	  Myx Lifecycle Methods: these methods are called automatically by the framework
+  	  as the bricks are created, attached, detached, and destroyed respectively.
+	*/	
+	public void init(){
+	    //TODO Auto-generated method stub
+		player1=new Player();
+	}
+	public void begin(){
+		//TODO Auto-generated method stub
+	}
+	public void end(){
+		//TODO Auto-generated method stub
+	}
+	public void destroy(){
+		//TODO Auto-generated method stub
+	}
+
+	/*
+  	  Implementation primitives required by the architecture
+	*/
+  
+    //To be imported: Graphics2D,ArrayList,Iterator,List,Game,WorldPanel,Asteroid,Bullet,Entity,Player,Vector2
+    public void setThrusting (boolean state)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void setRotateLeft (boolean state)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void setRotateRight (boolean state)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void setFiring (boolean state)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void setFiringEnabled (boolean state)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void reset ()   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void update (Game game)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void handleCollision (Game game,Entity other)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void addScore (int score)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public int getScore ()   {
+		//TODO Auto-generated method stub
+		return 0;
+    }
+    public void draw (Graphics2D g,Game game)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public Player createPlayer ()   {
+		//TODO Auto-generated method stub
+		return null;
+    }
+}

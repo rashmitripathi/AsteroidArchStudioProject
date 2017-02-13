@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="comp.Player.PlayerImp"/>
+<fullyQualifiedTypeName name="org.psnbtech.util.Clock"/>
+<fullyQualifiedTypeName name="comp.Game.GameArch"/>
+<fullyQualifiedTypeName name="javax.swing.JFrame"/>
+<fullyQualifiedTypeName name="comp.Game.GameImp"/>
+<fullyQualifiedTypeName name="comp.Player1.Player1Arch"/>
+<fullyQualifiedTypeName name="comp.Player2.Player2Arch"/>
+<fullyQualifiedTypeName name="org.psnbtech.Game"/>
+<fullyQualifiedTypeName name="org.psnbtech.entity.Player"/>
+</qualifiedTypeNameHistroy>

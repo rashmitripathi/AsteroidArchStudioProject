@@ -1,0 +1,10 @@
+package edu.umkc.asteroid.archInterfaces;
+
+import org.psnbtech.entity.Player;
+
+public interface IPlayer1 {
+	
+	public Player createPlayer1();
+	
+
+}

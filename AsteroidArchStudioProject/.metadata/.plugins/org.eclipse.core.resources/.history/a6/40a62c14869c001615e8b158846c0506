@@ -1,0 +1,64 @@
+package edu.umkc.asteroid.arch;
+
+
+import edu.uci.isr.myx.fw.AbstractMyxSimpleBrick;
+import edu.uci.isr.myx.fw.IMyxName;
+import edu.uci.isr.myx.fw.MyxUtils;
+
+import edu.umkc.asteroid.archInterfaces.IPlayer;
+
+import org.psnbtech.Game;
+
+public class PlayerArch extends AbstractMyxSimpleBrick implements IPlayer
+{
+    public static final IMyxName msg_IPlayer = MyxUtils.createName("edu.umkc.asteroid.archInterfaces.IPlayer");
+
+
+	private IPlayerImp _imp;
+
+    public PlayerArch (){
+		_imp = getImplementation();
+		if (_imp != null){
+			_imp.setArch(this);
+		} else {
+			System.exit(1);
+		}
+	}
+    
+    protected IPlayerImp getImplementation(){
+        try{
+			return new PlayerImp();    
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public void init(){
+        _imp.init();
+    }
+    
+    public void begin(){
+        _imp.begin();
+    }
+    
+    public void end(){
+        _imp.end();
+    }
+    
+    public void destroy(){
+        _imp.destroy();
+    }
+    
+	public Object getServiceObject(IMyxName arg0) {
+		if (arg0.equals(msg_IPlayer)){
+			return this;
+		}        
+		return null;
+	}
+  
+    //To be imported: Game
+    public void addPlayer (Game game)   {
+		_imp.addPlayer(game);
+    }    
+}

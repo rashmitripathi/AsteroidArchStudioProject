@@ -1,0 +1,51 @@
+package comp.Game;
+
+import org.psnbtech.Game;
+
+public class GameImp implements IGameImp
+{
+	private GameArch _arch;
+	
+	Game game;
+
+    public GameImp (){
+    }
+
+	public void setArch(GameArch arch){
+		_arch = arch;
+	}
+	public GameArch getArch(){
+		return _arch;
+	}
+
+	/*
+  	  Myx Lifecycle Methods: these methods are called automatically by the framework
+  	  as the bricks are created, attached, detached, and destroyed respectively.
+	*/	
+	public void init(){
+	    //TODO Auto-generated method stub
+		game=new Game();
+	}
+	public void begin(){
+		//TODO Auto-generated method stub
+		
+		System.out.println("Initializing game begin");
+		//game.player1=new Player();		
+		game.player1=_arch.OUT_IPlayer1.createPlayer1();
+		game.player2=_arch.OUT_IPlayer2.createPlayer2();
+		game.logicTimer=_arch.OUT_IClock.create();
+		//game.player2=new Player();
+		game.startGame();
+		
+	}
+	public void end(){
+		//TODO Auto-generated method stub
+	}
+	public void destroy(){
+		//TODO Auto-generated method stub
+	}
+
+	/*
+  	  Implementation primitives required by the architecture
+	*/
+}

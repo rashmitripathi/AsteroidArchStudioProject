@@ -1,0 +1,18 @@
+package edu.umkc.asteroid.archInterfaces;
+
+import org.psnbtech.entity.Player;
+
+public interface IGame {
+	
+	public void startGame();
+	
+	public void killPlayer(Player player);	
+	
+	public void resetGame();
+	
+	public void resetEntityLists();
+	
+	public boolean areEnemiesDead();
+	
+	
+}

@@ -1,0 +1,9 @@
+package edu.umkc.asteroid.archInterfaces;
+
+public interface IGame {
+	
+	public void startGame();
+	
+	public void killPlayer();
+
+}

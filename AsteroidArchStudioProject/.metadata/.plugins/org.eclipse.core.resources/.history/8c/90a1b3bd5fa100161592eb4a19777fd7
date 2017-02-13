@@ -1,0 +1,5 @@
+package edu.umkc.asteroid.archInterfaces;
+
+public interface IPlayer1 {
+
+}

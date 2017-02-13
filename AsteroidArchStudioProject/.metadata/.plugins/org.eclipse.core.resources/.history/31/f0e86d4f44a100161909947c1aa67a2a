@@ -1,0 +1,280 @@
+package comp.Game;
+
+
+import java.awt.BorderLayout;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import org.psnbtech.Game;
+import org.psnbtech.WorldPanel;
+
+import org.psnbtech.entity.Asteroid;
+import org.psnbtech.entity.Entity;
+import org.psnbtech.entity.Player;
+
+import org.psnbtech.util.Clock;
+
+public class GameImp implements IGameImp
+{
+	private GameArch _arch;
+
+	/**
+	 * The Serial Version Unique Identifier.
+	 */
+	private static final long serialVersionUID = -3535839203174039672L;
+
+	/**
+	 * The WorldPanel instance.
+	 */
+	private WorldPanel world;
+	
+	/**
+	 * The Clock instance for handling the game updates.
+	 */
+	public Clock logicTimer;
+	
+	/**
+	 * The Random instance for spawning entities.
+	 */
+	private Random random;
+	
+	/**
+	 * The list of Entity objects that exist in the game world.
+	 */
+	private List<Entity> entities;
+	
+	/**
+	 * The list of Entity objects that need to be added to the game world.
+	 */
+	private List<Entity> pendingEntities;
+		
+	/**
+	 * The Player instance.
+	 */
+	public Player player1;
+	
+	public Player player2;
+	
+	
+	/**
+	 * <p>The death cooldown timer is responsible for spreading a Player's death
+	 * out over time, so the player does not instantly spawn.</p>
+	 * 
+	 * <p>Upon death, this value is set to {@code DEATH_COOLDOWN_LIMIT}, and is
+	 * decremented each frame.</p>
+	 * 
+	 * <p>Once the value reaches {@code RESPAWN_COOLDOWN_LIMIT}, the player's ship
+	 * will be reset and the player will regain the ability to move.</p>
+	 * 
+	 * <p>Once the value reaches {@code INVULN_COOLDOWN_LIMIT}, the Player's ship
+	 * will be vulnerable to collisions and the Player will regain the ability to
+	 * shoot.</p>
+	 */
+	public int deathCooldown;
+	
+	/**
+	 * <p>The show level cooldown timer is responsible for displaying the current
+	 * level briefly after the previous level has been completed.</p>
+	 */
+	public int showLevelCooldown;
+	
+	/**
+	 * <p>The reset cooldown prevents the game from instantly restarting if the
+	 * player is pressing any keys upon death, as key events are continuously
+	 * fired until the player lets go of the key.</p>
+	 * 
+	 * <p>This timer adds a short delay that must expire before the game can
+	 * be reset, giving the player time to react.</p>
+	 */
+	public int restartCooldown;
+	
+	
+	/**
+	 * The current level the player is on.
+	 */
+	private int level;
+	
+	/**
+	 * Whether or not the game is over.
+	 */
+	public boolean isGameOver;
+	
+	/**
+	 * Whether or not the player has pressed anything to restart the game.
+	 */
+	private boolean restartGame;
+	
+	Game game;
+	
+    public GameImp (){
+    	
+    }
+
+	public void setArch(GameArch arch){
+		_arch = arch;
+	}
+	public GameArch getArch(){
+		return _arch;
+	}
+
+	/*
+  	  Myx Lifecycle Methods: these methods are called automatically by the framework
+  	  as the bricks are created, attached, detached, and destroyed respectively.
+	*/	
+	public void init(){
+	    //TODO Auto-generated method stub
+		game=new Game();
+	}
+	public void begin(){
+		//TODO Auto-generated method stub
+		System.out.println("Initializing game begin");
+		//game.player1=new Player();		
+		game.player1=_arch.OUT_IPlayer.createPlayer();
+		game.player2=_arch.OUT_IPlayer.createPlayer();
+		game.logicTimer=_arch.OUT_IClock.create();
+		//game.player2=new Player();
+	    startGame();
+		
+	}
+	public void end(){
+		//TODO Auto-generated method stub
+	}
+	public void destroy(){
+		//TODO Auto-generated method stub
+	}
+
+	/*
+  	  Implementation primitives required by the architecture
+	*/
+  
+    //To be imported: BorderLayout,KeyAdapter,KeyEvent,ArrayList,Iterator,LinkedList,List,Random,Game,WorldPanel,Asteroid,Entity,Player,Clock,GameArch
+    public void startGame ()   {
+    	
+
+		//Initialize the engine's variables.
+		this.random = new Random();
+		this.entities = new LinkedList<Entity>();
+		this.pendingEntities = new ArrayList<>();
+		//this.player1 = new Player();
+		
+		//Set the variables to their default values.
+		resetGame();
+		
+		//Create the logic timer and enter the game loop.
+		//this.logicTimer = new Clock(FRAMES_PER_SECOND);
+		while(true) {
+			//Get the time that the frame started.
+			long start = System.nanoTime();
+			
+			/*
+			 * Update the game once for every cycle that has elapsed. If the game
+			 * starts to fall behind, the game will update multiple times for each
+			 * frame that is rendered in order to catch up.
+			 */
+			logicTimer.update();
+			for(int i = 0; i < 5 && logicTimer.hasElapsedCycle(); i++) {
+				updateGame();
+			}
+			
+			//Repaint the window.
+			world.repaint();
+			
+			/*
+			 * Determine how many nanoseconds we have left during this cycle,
+			 * and sleep until it is time for the next frame to start.
+			 */
+			long delta = _arch.FRAME_TIME - (System.nanoTime() - start);
+			if(delta > 0) {
+				try {
+					Thread.sleep(delta / 1000000L, (int) delta % 1000000);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	
+    }
+    public void killPlayer ()   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void resetGame ()   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void resetEntityLists ()   {
+		//TODO Auto-generated method stub
+		
+    }
+    public boolean areEnemiesDead ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public boolean checkForRestart ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public void startGameExecution ()   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void updateGame ()   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void setArchData (GameArch _arch)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public void registerEntity (Entity entity)   {
+		//TODO Auto-generated method stub
+		
+    }
+    public boolean isGameOver ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public boolean isPlayerInvulnerable ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public boolean canDrawPlayer ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public int getLevel ()   {
+		//TODO Auto-generated method stub
+		return 0;
+    }
+    public boolean isPaused ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public boolean isShowingLevel ()   {
+		//TODO Auto-generated method stub
+		return false;
+    }
+    public Random getRandom ()   {
+		//TODO Auto-generated method stub
+		return null;
+    }
+    public List<Entity> getEntities ()   {
+		//TODO Auto-generated method stub
+		return null;
+    }
+    public Player getPlayer1 ()   {
+		//TODO Auto-generated method stub
+		return null;
+    }
+    public Player getPlayer2 ()   {
+		//TODO Auto-generated method stub
+		return null;
+    }
+}

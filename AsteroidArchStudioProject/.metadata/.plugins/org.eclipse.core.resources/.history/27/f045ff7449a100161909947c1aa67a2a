@@ -1,0 +1,156 @@
+package edu.umkc.asteroid.archInterfaces;
+
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import org.psnbtech.Game;
+import org.psnbtech.WorldPanel;
+import org.psnbtech.entity.Asteroid;
+import org.psnbtech.entity.Entity;
+import org.psnbtech.entity.Player;
+import org.psnbtech.util.Clock;
+
+import comp.Game.GameArch;
+
+public interface IGame {
+	
+	public void startGame();
+	
+	public void killPlayer();	
+	
+	public void resetGame();
+	
+	public void resetEntityLists();
+	
+	public boolean areEnemiesDead();
+	
+	
+	/**
+	 * The number of frame per second the game should run at.
+	 */
+	public static final int FRAMES_PER_SECOND = 60;
+	
+	/**
+	 * The number of nanoseconds that should elapse each frame. This is far more
+	 * accurate than using milliseconds.
+	 */
+	public static final long FRAME_TIME = (long)(1000000000.0 / FRAMES_PER_SECOND);
+	
+	/**
+	 * The number of frames that the "current level" message appears for.
+	 */
+	public static final int DISPLAY_LEVEL_LIMIT = 60;
+	
+	/**
+	 * The value that {@code deathCooldown} will be set to upon player death.
+	 */
+	public static final int DEATH_COOLDOWN_LIMIT = 200;
+	
+	/**
+	 * The value for {@code deathCooldown} that the Player respawns.
+	 */
+	public static final int RESPAWN_COOLDOWN_LIMIT = 100;
+	
+	/**
+	 * The value for {@code deathCooldown} that the player becomes vulnerable,
+	 * and regains the ability to fire.
+	 */
+	public static final int INVULN_COOLDOWN_LIMIT = 0;
+	
+	/**
+	 * The value that {@code resetCooldown} is set to when the player loses.
+	 */
+	public static final int RESET_COOLDOWN_LIMIT = 120;
+		
+	/**
+	 * Check the user input to see if the key should be used to restart the game.
+	 * @return Whether or not the key restarted the game.
+	 */
+	public boolean checkForRestart();
+	
+	
+	
+	/**
+	 * Starts the game running, and enters the main game loop.
+	 */
+	public void startGameExecution();
+	
+	/**
+	 * Update the game entities and states.
+	 */
+	public void updateGame();
+	
+	public void setArchData(GameArch _arch);
+	
+	/**
+	 * Adds a new entity to the game world.
+	 * @param entity The entity to add.
+	 */
+	public void registerEntity(Entity entity);
+	
+	/**
+	 * Whether or not we are in the game over state.
+	 * @return Whether or not the game is over.
+	 */
+	public boolean isGameOver();
+	/**
+	 * Determines whether or not the player is invulnerable.
+	 * @return Whether or not the player is invulnerable.
+	 */
+	public boolean isPlayerInvulnerable();
+	/**
+	 * Determines whether or not the player can be drawn.
+	 * @return Whether or not the player can be drawn.
+	 */
+	public boolean canDrawPlayer();
+	
+	
+	/**
+	 * Gets the current level.
+	 * @return The current level.
+	 */
+	public int getLevel();
+	/**
+	 * Gets whether or not the game is paused.
+	 * @return Whether or not the game is paused.
+	 */
+	public boolean isPaused();
+	
+	/**
+	 * Gets whether or not the level is being shown.
+	 * @return Whether or not the level is being shown.
+	 */
+	public boolean isShowingLevel();
+
+	/**
+	 * Gets the Random instance.
+	 * @return The Random instance.
+	 */
+	public Random getRandom();
+	
+	/**
+	 * Gets the list of Entities in the world.
+	 * @return The Entity list.
+	 */
+	public List<Entity> getEntities();
+	
+	/**
+	 * Gets the Player instance.
+	 * @return
+	 */
+	public Player getPlayer1();
+	
+	/**
+	 * Gets the Player instance.
+	 * @return
+	 */
+	public Player getPlayer2();
+	
+	
+}

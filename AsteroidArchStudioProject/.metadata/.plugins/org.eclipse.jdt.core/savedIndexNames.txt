@@ -1,0 +1,14 @@
+INDEX VERSION 1.129+C:\Users\Puchu\Documents\GitHub\AsteroidArchStudioProject\.metadata\.plugins\org.eclipse.jdt.core
+204805913.index
+1708848662.index
+1067094681.index
+2152649570.index
+680105893.index
+3432561876.index
+3665570211.index
+2588845452.index
+3974412156.index
+4244721665.index
+3414917692.index
+3239695257.index
+3669141882.index

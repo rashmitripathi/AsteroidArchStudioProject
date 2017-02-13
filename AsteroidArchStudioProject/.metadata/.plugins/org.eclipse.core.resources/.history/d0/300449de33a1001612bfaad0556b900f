@@ -1,0 +1,257 @@
+package comp.Game;
+
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import org.psnbtech.Game;
+import org.psnbtech.WorldPanel;
+
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import javax.swing.JFrame;
+
+import org.psnbtech.entity.Asteroid;
+import org.psnbtech.entity.Entity;
+import org.psnbtech.util.Clock;
+
+
+public class GameImp extends JFrame implements IGameImp 
+{
+	private GameArch _arch;
+
+	Game game;
+	
+    public GameImp (){
+    }
+
+	public void setArch(GameArch arch){
+		_arch = arch;
+	}
+	public GameArch getArch(){
+		return _arch;
+	}
+
+	/*
+  	  Myx Lifecycle Methods: these methods are called automatically by the framework
+  	  as the bricks are created, attached, detached, and destroyed respectively.
+	*/	
+	public void init(){
+		System.out.println("rashmi initializing game");
+		//game=new Game();
+	    //TODO Auto-generated method stub
+		
+
+		//Initialize the window's basic properties.
+		super("Asteroids");
+		setLayout(new BorderLayout());
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
+		
+		//Create and add the WorldPanel instance to the window.
+		add(this.world = new WorldPanel(this), BorderLayout.CENTER);
+		
+		/*
+		 * Here we add a key listener to the window so that we can process incoming
+		 * user input.
+		 * 
+		 * Because the player is updated every cycle, rather than when it receives
+		 * input (like I did for Tetris), we're only going to set a flag to indicate
+		 * the current input state. The actual change in the player's entity's state
+		 * will be handled in the game loop.
+		 * 
+		 * The reason we do this is simple. Events are only fired when input is received
+		 * from the user. While the keyPressed event is continuously fired, it isn't
+		 * necessarily going to be in sync with our main thread, which would cause
+		 * all sorts of unpredictable behavior from our ship.
+		 * 
+		 * Note that any "pressed" event will restart the game rather than change the
+		 * ship's state if the conditions are met.
+		 */
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				//Determine which key was pressed.
+				switch(e.getKeyCode()) {
+				
+				//Indicate that we want to apply thrust to our ship.
+				case KeyEvent.VK_W:
+					if(!checkForRestart()) {
+						player2.setThrusting(true);
+					}
+					break;
+				case KeyEvent.VK_UP:
+					if(!checkForRestart()) {
+						player1.setThrusting(true);
+					}
+					break;
+					
+				//Indicate that we want to rotate our ship to the left.
+				case KeyEvent.VK_A:
+					if(!checkForRestart()) {
+						player2.setRotateLeft(true);
+					}
+					break;
+				case KeyEvent.VK_LEFT:
+					if(!checkForRestart()) {
+						player1.setRotateLeft(true);
+					}
+					break;
+					
+				//Indicate that we want to rotate our ship to the right.
+				case KeyEvent.VK_D:
+					if(!checkForRestart()) {
+						player2.setRotateRight(true);
+					}
+					break;
+				case KeyEvent.VK_RIGHT:
+					if(!checkForRestart()) {
+						player1.setRotateRight(true);
+					}
+					break;
+					
+				case KeyEvent.VK_DOWN:
+					if(!checkForRestart()) {
+						player1.setFiring(true);
+					}
+					break;
+				//Indicate that we want our ship to fire bullets.
+				case KeyEvent.VK_SPACE:
+					if(!checkForRestart()) {
+						player2.setFiring(true);
+					}
+					break;
+					
+				//Indicate that we want to pause the game.
+				case KeyEvent.VK_P:
+					if(!checkForRestart()) {
+						logicTimer.setPaused(!logicTimer.isPaused());
+					}
+					break;
+			
+					
+				//Handle all other key presses.
+				default:
+					checkForRestart();
+					break;
+					
+				}
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				switch(e.getKeyCode()) {
+
+				//Indicate that we no long want to apply thrust to the ship.
+				case KeyEvent.VK_W:
+					player2.setThrusting(false);
+					break;
+				case KeyEvent.VK_UP:
+					player1.setThrusting(false);
+					break;
+				
+				//Indicate that we no longer want to rotate our ship left.
+				case KeyEvent.VK_A:
+					player2.setRotateLeft(false);
+					break;
+				case KeyEvent.VK_LEFT:
+					player1.setRotateLeft(false);
+					break;
+
+				//Indicate that we no longer want to rotate our ship right.
+				case KeyEvent.VK_D:
+					player2.setRotateRight(false);
+					break;
+				case KeyEvent.VK_RIGHT:
+					player1.setRotateRight(false);
+					break;
+					
+				//Indicate that we no long want to fire bullets.
+				case KeyEvent.VK_SPACE:
+					player2.setFiring(false);
+					break;
+				case KeyEvent.VK_DOWN:
+					player1.setFiring(false);
+					break;	
+				}
+			}
+		});
+		
+		//Resize the window to the correct size, position it in the center of the screen, and display it.
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+	
+	}
+	public void begin(){
+		//TODO Auto-generated method stub
+		System.out.println("rashmi starting game");
+		//game.player1=new Player();		
+		game.player1=_arch.OUT_IPlayer.createPlayer();
+		game.player2=_arch.OUT_IPlayer.createPlayer();
+		game.logicTimer=_arch.OUT_IClock.create();
+		//game.player2=new Player();
+		game.setArchData(_arch);
+		startGame();
+		
+	}
+	public void end(){
+		//TODO Auto-generated method stub
+	}
+	public void destroy(){
+		//TODO Auto-generated method stub
+	}
+
+	/*
+  	  Implementation primitives required by the architecture
+	*/
+  
+    
+    public void startGame ()   {
+		//TODO Auto-generated method stub
+    	game.startGame();
+    			
+    }
+    public void killPlayer ()   {
+		//TODO Auto-generated method stub
+    	
+    	if(game.getPlayer1().lives == 0 && game.getPlayer2().lives == 0) {
+			game.isGameOver = true;
+			game.restartCooldown = game.RESET_COOLDOWN_LIMIT;
+			game.deathCooldown = Integer.MAX_VALUE;
+		}else if(game.getPlayer1().lives==0 ||game.getPlayer2().lives==0){
+			resetEntityLists();
+		}
+		else {
+			game.deathCooldown = game.DEATH_COOLDOWN_LIMIT;
+		}	
+    	
+		
+    }
+    
+    public void resetGame ()   {
+		//TODO Auto-generated method stub
+    	game.resetGame();
+		
+    }
+
+	@Override
+	public void resetEntityLists() {
+		// TODO Auto-generated method stub
+              game.resetEntityLists();		
+	}
+
+	@Override
+	public boolean areEnemiesDead() {
+		// TODO Auto-generated method stub
+		return game.areEnemiesDead();
+	}
+    
+}

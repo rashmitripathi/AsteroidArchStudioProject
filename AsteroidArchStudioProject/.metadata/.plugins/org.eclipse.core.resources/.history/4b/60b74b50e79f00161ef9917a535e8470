@@ -1,0 +1,60 @@
+package comp.Player;
+
+
+import edu.uci.isr.myx.fw.AbstractMyxSimpleBrick;
+import edu.uci.isr.myx.fw.IMyxName;
+import edu.uci.isr.myx.fw.MyxUtils;
+
+import edu.umkc.asteroid.archInterfaces.IGame;
+
+public class PlayerArch extends AbstractMyxSimpleBrick
+{
+    public static final IMyxName msg_IGame = MyxUtils.createName("edu.umkc.asteroid.archInterfaces.IGame");
+
+    public IGame OUT_IGame;
+
+	private IPlayerImp _imp;
+
+    public PlayerArch (){
+		_imp = getImplementation();
+		if (_imp != null){
+			_imp.setArch(this);
+		} else {
+			System.exit(1);
+		}
+	}
+    
+    protected IPlayerImp getImplementation(){
+        try{
+			return new PlayerImp();    
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public void init(){
+        _imp.init();
+    }
+    
+    public void begin(){
+        OUT_IGame = (IGame) MyxUtils.getFirstRequiredServiceObject(this,msg_IGame);
+        if (OUT_IGame == null){
+ 			System.err.println("Error: Interface edu.umkc.asteroid.archInterfaces.IGame returned null");
+			return;       
+        }
+        _imp.begin();
+    }
+    
+    public void end(){
+        _imp.end();
+    }
+    
+    public void destroy(){
+        _imp.destroy();
+    }
+    
+	public Object getServiceObject(IMyxName arg0) {
+		return null;
+	}
+}

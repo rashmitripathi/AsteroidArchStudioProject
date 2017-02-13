@@ -1,0 +1,296 @@
+package edu.umkc.asteroid.archInterfaces;
+
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import org.psnbtech.Game;
+import org.psnbtech.WorldPanel;
+import org.psnbtech.entity.Asteroid;
+import org.psnbtech.entity.Entity;
+import org.psnbtech.entity.Player;
+import org.psnbtech.util.Clock;
+
+public interface IGame {
+	
+	public void startGame();
+	
+	public void killPlayer();	
+	
+	public default boolean checkForRestart();
+	
+	private void updateGame() {
+		/*
+		 * Here we add any pending entities to the world.
+		 * 
+		 * Two lists are required because we will frequently add entities to the
+		 * world while we are iterating over them, which causes all sorts of
+		 * errors.
+		 */
+		entities.addAll(pendingEntities);
+		pendingEntities.clear();
+		
+		/*
+		 * Decrement the restart cooldown.
+		 */
+		if(restartCooldown > 0) {
+			this.restartCooldown--;
+		}
+		
+		/*
+		 * Decrement the show level cooldown.
+		 */
+		if(showLevelCooldown > 0) {
+			this.showLevelCooldown--;
+		}
+		
+		/*
+		 * Restart the game if needed.
+		 */
+		if(isGameOver && restartGame) {
+			resetGame();
+		}
+		
+		/*
+		 * If the game is currently in progress, and there are no enemies left alive,
+		 * we prepare the next level.
+		 */
+		if(!isGameOver && areEnemiesDead()) {
+			//Increment the current level, and set the show level cooldown.
+			this.level++;
+			this.showLevelCooldown = DISPLAY_LEVEL_LIMIT;
+			
+			//Reset the entity lists (to remove bullets).
+			resetEntityLists();
+			
+			//Reset the player's entity to it's default state, and re-enable firing.
+			player1.reset();
+			player1.setFiringEnabled(true);
+			
+			player2.reset();
+			player2.setFiringEnabled(true);
+			
+			//Add the asteroids to the world.
+			for(int i = 0; i < level + 2; i++) {
+				registerEntity(new Asteroid(random));
+			}
+		}
+		
+		/*
+		 * If the player has recently died, decrement the cooldown and handle any
+		 * special cases when they occur.
+		 */
+		if(deathCooldown > 0) {
+			this.deathCooldown--;
+			switch(deathCooldown) {
+			
+			//Reset the entity to it's default spawn state, and disable firing.
+			case RESPAWN_COOLDOWN_LIMIT:
+				player1.reset();
+				player1.setFiringEnabled(false);
+				player2.reset();
+				player2.setFiringEnabled(false);
+				break;
+			
+			//Re-enable the ability to fire, as we're no longer invulnerable.
+			case INVULN_COOLDOWN_LIMIT:
+				player1.setFiringEnabled(true);
+				player2.setFiringEnabled(true);
+				break;
+			
+			}
+		}
+		
+		/*
+		 * Only run any of the update code if we're not currently displaying the
+		 * level to the player.
+		 */
+		if(showLevelCooldown == 0) {
+			
+			//Iterate through the Entities and update their states.
+			for(Entity entity : entities) {
+				entity.update(this);
+			}
+			
+			/*
+			 * Handle any collisions that take place.
+			 * 
+			 * The outer loop iterates through all registered entities, while the
+			 * inner loop only iterates through the Entities later in the list
+			 * than the outer Entity.
+			 * 
+			 * This ensures that the same collision isn't handled multiple times,
+			 * which allows us to make changes to an entity without it interfering
+			 * with other collision results.
+			 */
+			for(int i = 0; i < entities.size(); i++) {
+				Entity a = entities.get(i);
+				for(int j = i + 1; j < entities.size(); j++) {
+					Entity b = entities.get(j);
+					if(i != j && a.checkCollision(b) && ((a != player1 && b != player1) || deathCooldown <= INVULN_COOLDOWN_LIMIT)) {
+						a.handleCollision(this, b);
+						b.handleCollision(this, a);
+					}
+				}
+			}
+			
+			//Loop through and remove "dead" entities.
+			Iterator<Entity> iter = entities.iterator();
+			while(iter.hasNext()) {
+				if(iter.next().needsRemoval()) {
+					iter.remove();
+				}
+			}
+		}
+	}
+	
+	
+	private void resetGame() {}
+	
+	/**
+	 * Removes all entities, with the exception of the player, from the world.
+	 */
+	private void resetEntityLists() {}
+	
+	
+	
+	/**
+	 * Determines whether or not any asteroids still exist in the world.
+	 * @return Whether or not all of the enemies are dead.
+	 */
+	private boolean areEnemiesDead() {}
+	
+	
+		//Decrement the number of lives that we still have.
+		
+	   /*
+		 * If there are no lives remaining, prepare the game over state variables,
+		 * otherwise prepare the death cooldown.
+		 * 
+		 * Note that death cooldown is set to Integer.MAX_VALUE in the event of a
+		 * game over. While finite, the amount of time it would take for it to
+		 * reach zero is far longer than anyone would care to run the program
+		 * for.
+		 */
+		if(this.getPlayer1().lives == 0 && this.getPlayer2().lives == 0) {
+			this.isGameOver = true;
+			this.restartCooldown = RESET_COOLDOWN_LIMIT;
+			this.deathCooldown = Integer.MAX_VALUE;
+		}else if(this.getPlayer1().lives==0 ||this.getPlayer2().lives==0){
+			resetEntityLists();
+		}
+		else {
+			this.deathCooldown = DEATH_COOLDOWN_LIMIT;
+		}
+	
+		
+	}
+	
+	
+	
+	/**
+	 * Adds a new entity to the game world.
+	 * @param entity The entity to add.
+	 */
+	public void registerEntity(Entity entity) {
+		pendingEntities.add(entity);
+	}
+	
+	/**
+	 * Whether or not we are in the game over state.
+	 * @return Whether or not the game is over.
+	 */
+	public boolean isGameOver() {
+		return isGameOver;
+	}
+	
+	/**
+	 * Determines whether or not the player is invulnerable.
+	 * @return Whether or not the player is invulnerable.
+	 */
+	public boolean isPlayerInvulnerable() {
+		return (deathCooldown > INVULN_COOLDOWN_LIMIT);
+	}
+	
+	/**
+	 * Determines whether or not the player can be drawn.
+	 * @return Whether or not the player can be drawn.
+	 */
+	public boolean canDrawPlayer() {
+		return (deathCooldown <= RESPAWN_COOLDOWN_LIMIT);
+	}
+	
+	
+	
+	/**
+	 * Gets the number of lives remaining.
+	 * @return The number of lives remaining.
+	 *//*
+	public int getLives() {
+		return lives1;
+	}*/
+	
+	/**
+	 * Gets the current level.
+	 * @return The current level.
+	 */
+	public int getLevel() {
+		return level;
+	}
+	
+	/**
+	 * Gets whether or not the game is paused.
+	 * @return Whether or not the game is paused.
+	 */
+	public boolean isPaused() {
+		return logicTimer.isPaused();
+	}
+	
+	/**
+	 * Gets whether or not the level is being shown.
+	 * @return Whether or not the level is being shown.
+	 */
+	public boolean isShowingLevel() {
+		return (showLevelCooldown > 0);
+	}
+
+	/**
+	 * Gets the Random instance.
+	 * @return The Random instance.
+	 */
+	public Random getRandom() {
+		return random;
+	}
+	
+	/**
+	 * Gets the list of Entities in the world.
+	 * @return The Entity list.
+	 */
+	public List<Entity> getEntities() {
+		return entities;
+	}
+	
+	/**
+	 * Gets the Player instance.
+	 * @return
+	 */
+	public Player getPlayer1() {
+		return player1;
+	}
+	
+	/**
+	 * Gets the Player instance.
+	 * @return
+	 */
+	public Player getPlayer2() {
+		return player2;
+	}
+	
+	
+
+}

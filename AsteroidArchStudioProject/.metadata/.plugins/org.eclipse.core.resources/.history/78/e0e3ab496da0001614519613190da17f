@@ -1,0 +1,51 @@
+package comp.Clock;
+
+import org.psnbtech.util.Clock;
+
+public class ClockImp implements IClockImp
+{
+	private ClockArch _arch;
+	
+	Clock clock;
+
+    public ClockImp (){
+    }
+
+	public void setArch(ClockArch arch){
+		_arch = arch;
+	}
+	public ClockArch getArch(){
+		return _arch;
+	}
+
+	/*
+  	  Myx Lifecycle Methods: these methods are called automatically by the framework
+  	  as the bricks are created, attached, detached, and destroyed respectively.
+	*/	
+	public void init(){
+	    //TODO Auto-generated method stub
+	}
+	public void begin(){
+		//TODO Auto-generated method stub
+	}
+	public void end(){
+		//TODO Auto-generated method stub
+	}
+	public void destroy(){
+		//TODO Auto-generated method stub
+	}
+
+	/*
+  	  Implementation primitives required by the architecture
+	*/
+  
+    
+    public void setCyclesPerSecond (float cyclesPerSecond)   {
+		//TODO Auto-generated method stub
+		clock.setCyclesPerSecond(cyclesPerSecond);
+    }
+    public void reset ()   {
+		//TODO Auto-generated method stub
+		clock.reset();
+    }
+}
